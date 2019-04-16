@@ -3,6 +3,14 @@
 ##调用方式
 
 ```
+- (void(^)(APLPromiseResult))testWithFunction {
+    return ^(APLPromiseResult result) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            result(@(100));
+        });
+    };
+}
+
 __block NSInteger index = 0;
 [APLPromise async:^(APLPromise* _Nonnull promise){
     NSInteger value = [[promise await:[self testWithFunction]] integerValue];
