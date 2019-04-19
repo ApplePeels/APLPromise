@@ -22,11 +22,10 @@ static dispatch_queue_t s_queue;
 }
 
 + (void)initialize {
-    s_queue = dispatch_queue_create("com.applepeel.queue.promise", DISPATCH_QUEUE_SERIAL);
+    s_queue = dispatch_queue_create("com.applepeel.queue.promise", DISPATCH_QUEUE_CONCURRENT);
 }
 
 - (void)dealloc {
-    //释放
 }
 
 + (void)async:(void(^)(APLPromise* promise))block {
