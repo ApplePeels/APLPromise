@@ -8,23 +8,22 @@
 
 #import "AppDelegate.h"
 #import "APLPromise.h"
+#import "APLPromiseDefs.h"
 
 @implementation AppDelegate
 
-- (void(^)(APLPromiseResult))testWithFunction {
-    return ^(APLPromiseResult result) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            result(@(100));
-        });
-    };
-}
+ASYNC_INSTANCE_METHOD(testWithFunction:(NSString*)value, {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        ASYNC_RESULT(value);
+    });
+})
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     __block NSInteger index = 0;
     [APLPromise async:^(APLPromise* _Nonnull promise){
-        NSInteger value = [[promise await:[self testWithFunction]] integerValue];
-        NSLog(@"value %ld", value);
+        NSString* value = [promise await:[self async_testWithFunction:@"testFunctionValue"]];
+        NSLog(@"value %@", value);
         id ret1 = [promise await:^(APLPromiseResult result) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 index++;
